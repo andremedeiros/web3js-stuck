@@ -9,10 +9,6 @@ if(!fs.existsSync('dtwitter.sol.json')) {
   fs.writeFileSync('dtwitter.sol.json', JSON.stringify(output));
 }
 
-const defaultOptions = {
-
-};
-
 const output = JSON.parse(fs.readFileSync('dtwitter.sol.json', {encoding: 'utf8'}));
 //const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 const web3 = new Web3(new Web3.providers.WebsocketProvider("ws://localhost:8546"));
