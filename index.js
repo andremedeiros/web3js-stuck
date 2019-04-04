@@ -10,14 +10,15 @@ if(!fs.existsSync('dtwitter.sol.json')) {
 }
 
 const output = JSON.parse(fs.readFileSync('dtwitter.sol.json', {encoding: 'utf8'}));
-//const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-const web3 = new Web3(new Web3.providers.WebsocketProvider("ws://localhost:8556"));
+const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8555"));
+//const web3 = new Web3(new Web3.providers.WebsocketProvider("ws://localhost:8546"));
 
 const compiled = output.contracts[':DTwitter'];
 const interface = JSON.parse(compiled.interface);
 
 web3.eth.getAccounts().then((accounts) => {
   web3.eth.defaultAccount = accounts[0];
+  console.log(`DEFAULT AZCCOUNT: ${web3.eth.defaultAccount}`);
 
   const defaultOptions = {
     from: web3.eth.defaultAccount,
@@ -32,6 +33,7 @@ web3.eth.getAccounts().then((accounts) => {
     .on('error', (err) => { console.log(`ERROR: ${err}`); })
     .on('transactionHash', (txHash) => { console.log(`TX HASH: ${txHash}`); })
     .on('receipt', (receipt) => { console.log(`RECEIPT: ${receipt}`); })
+    .on('confirmation', (confirmationNumber, receipt) => { console.log(`CONFIRMATION: ${confirmationNumber}, ${receipt}`); })
     .then((Twitter) => {
       console.log("Deployed contract.");
       console.log("Creating account...");
@@ -42,6 +44,7 @@ web3.eth.getAccounts().then((accounts) => {
         .on('error', (err) => { console.log(`ERROR: ${err}`); })
         .on('transactionHash', (txHash) => { console.log(`TX HASH: ${txHash}`); })
         .on('receipt', (receipt) => { console.log(`RECEIPT: ${receipt}`); })
+        .on('confirmation', (confirmationNumber, receipt) => { console.log(`CONFIRMATION: ${confirmationNumber}, ${receipt}`); })
         .then(() => {
           console.log("Created account.");
           Twitter
