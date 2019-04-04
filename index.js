@@ -25,6 +25,7 @@ web3.eth.getAccounts().then((accounts) => {
     gasPrice: '30000000000000'
   };
 
+  console.log("Deploying contract...");
   new web3.eth.Contract(interface)
     .deploy(Object.assign({data: `0x${compiled.bytecode}`}, defaultOptions))
     .send(defaultOptions)
@@ -32,6 +33,8 @@ web3.eth.getAccounts().then((accounts) => {
     .on('transactionHash', (txHash) => { console.log(`TX HASH: ${txHash}`); })
     .on('receipt', (receipt) => { console.log(`RECEIPT: ${receipt}`); })
     .then((Twitter) => {
+      console.log("Deployed contract.");
+      console.log("Creating account...");
       Twitter
         .methods
         .createAccount('superdealloc', 'Just a guy who wants to chill.')
@@ -40,6 +43,7 @@ web3.eth.getAccounts().then((accounts) => {
         .on('transactionHash', (txHash) => { console.log(`TX HASH: ${txHash}`); })
         .on('receipt', (receipt) => { console.log(`RECEIPT: ${receipt}`); })
         .then(() => {
+          console.log("Created account.");
           Twitter
             .methods
             .users(web3.utils.keccak256('superdealloc'))
