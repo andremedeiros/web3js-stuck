@@ -1,5 +1,6 @@
 const fs = require('fs');
 const ethers = require('ethers');
+const Web3 = require('web3');
 
 if(!fs.existsSync('dtwitter.sol.json')) {
   const solc = require('solc');
@@ -24,11 +25,51 @@ const defaultOptions = {
 };
 
 console.log("Deploying contract...");
-let wallet = new ethers.Wallet(privateKey, provider);
+let wallet = ethers.Wallet.fromMnemonic('example exile argue silk regular smile grass bomb merge arm assist farm');
+wallet = wallet.connect(provider);
+// console.log('Wallet???', wallet);
 let contractFactory = new ethers.ContractFactory(interface, compiled.bytecode, wallet);
 let contract = contractFactory.deploy(function() {
   console.log('yeehaw');
-})
+}).then(async contract => {
+  console.log(contract.address);
+  // "0x2bD9aAa2953F988153c8629926D22A6a5F69b14E"
+
+  // The transaction that was sent to the network to deploy the Contract
+  // See: https://ropsten.etherscan.io/tx/0x159b76843662a15bd67e482dcfbee55e8e44efad26c5a614245e12a00d4b1a51
+  console.log(contract.deployTransaction.hash);
+  // "0x159b76843662a15bd67e482dcfbee55e8e44efad26c5a614245e12a00d4b1a51"
+
+  // The contract is NOT deployed yet; we must wait until it is mined
+  await contract.deployed()
+  console.log('Alright');
+
+
+  let contractWithSigner = contract.connect(wallet);
+// ... OR ...
+// let contractWithSigner = new Contract(contractAddress, abi, wallet)
+
+// Set a new Value, which returns the transaction
+  let tx = await contractWithSigner.createAccount('superdealloc', 'Just a guy who wants to chill.');
+
+// See: https://ropsten.etherscan.io/tx/0xaf0068dcf728afa5accd02172867627da4e6f946dfb8174a7be31f01b11d5364
+  console.log(tx.hash);
+// "0xaf0068dcf728afa5accd02172867627da4e6f946dfb8174a7be31f01b11d5364"
+
+// The operation is NOT complete yet; we must wait until it is mined
+  await tx.wait();
+
+  console.log('OK', tx);
+// Call the Contract's getValue() method again
+//   let newValue = await contract.users(Web3.utils.keccak256('superdealloc'));
+
+  // console.log(newValue);
+});
+
+process.stdin.setRawMode(true);
+process.stdin.resume();
+process.stdin.on('data', process.exit.bind(process, 0));
+
 /*
 new web3.eth.Contract(interface)
   .deploy(Object.assign({data: `0x${compiled.bytecode}`}, defaultOptions))
