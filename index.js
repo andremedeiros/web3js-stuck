@@ -11,7 +11,7 @@ if(!fs.existsSync('dtwitter.sol.json')) {
 
 const output = JSON.parse(fs.readFileSync('dtwitter.sol.json', {encoding: 'utf8'}));
 //const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-const web3 = new Web3(new Web3.providers.WebsocketProvider("ws://localhost:8546"));
+const web3 = new Web3(new Web3.providers.WebsocketProvider("ws://localhost:8556"));
 
 const compiled = output.contracts[':DTwitter'];
 const interface = JSON.parse(compiled.interface);
